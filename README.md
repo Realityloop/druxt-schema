@@ -30,6 +30,16 @@ module.exports = {
     baseUrl: 'https://example.com',
     schema: {
       filter: ['node--.*?--view']
+    },
+    resourceTypeMapping: {
+      "entity_form_display--entity_form_display": {
+        path: 'entity-form-displays',
+        type: 'entity-form-display',
+      },
+      "node--article": {
+        path: 'articles',
+        type: 'article'
+      }
     }
   }
 }

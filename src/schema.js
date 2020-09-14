@@ -43,7 +43,7 @@ class DruxtSchema {
       schema: {
         filter: [],
       },
-
+      resourceTypeMapping: {},
       ...options
     }
 
@@ -76,11 +76,20 @@ class DruxtSchema {
     const schemas = {}
 
     for (const schemaType of ['view', 'form']) {
-      const resourceType = `entity_${schemaType}_display--entity_${schemaType}_display`
+      const unaliasedSchemaResourceType = `entity_${schemaType}_display--entity_${schemaType}_display`
+
+      let resourceType = `entity_${schemaType}_display--entity_${schemaType}_display`
+      if (this.options.resourceTypeMapping.hasOwnProperty(unaliasedSchemaResourceType)) {
+        resourceType = this.options.resourceTypeMapping[unaliasedSchemaResourceType].type;
+      }
       const displays = await this.druxtRouter.getResources(resourceType)
 
       for (const display of displays) {
-        const resource = index[[display.attributes.targetEntityType, display.attributes.bundle].join('--')]
+        let resourceType = [display.attributes.targetEntityType, display.attributes.bundle].join('--');
+        if (this.options.resourceTypeMapping.hasOwnProperty(resourceType)) {
+          resourceType = this.options.resourceTypeMapping[resourceType].type;
+        }
+        const resource = index[resourceType]
 
         const config = {
           entityType: display.attributes.targetEntityType,
